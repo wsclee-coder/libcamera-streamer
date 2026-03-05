@@ -9,16 +9,16 @@ auto main() -> int
     //spdlog::set_level(spdlog::level::trace);
 
     StreamerConfiguration configuration;
-    configuration.Camera.width = 1280;
-    configuration.Camera.height = 720;
-    configuration.Camera.framerate = 60;
+    configuration.Camera.width = 640;
+    configuration.Camera.height = 480;
+    configuration.Camera.framerate = 30;
     configuration.Camera.denoise = "off";
-    configuration.Output.Ip = "192.168.88.115";
-    configuration.Output.Port = 5600;
-    configuration.Encoder.framerate = 60;
+    configuration.Output.Ip = "192.168.0.11";
+    configuration.Output.Port = 5004;
+    configuration.Encoder.framerate = 30;
     configuration.Encoder.bitrate = 5000000;
-    configuration.Encoder.width = 1280;
-    configuration.Encoder.height = 720;
+    configuration.Encoder.width = 640;
+    configuration.Encoder.height = 480;
 
     const auto streamer = std::make_unique<LibcameraStreamer>(configuration);
     streamer->Start();

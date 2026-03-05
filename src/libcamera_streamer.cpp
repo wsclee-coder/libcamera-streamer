@@ -41,6 +41,7 @@ LibcameraStreamer::LibcameraStreamer(StreamerConfiguration configuration)
     int flags = RCE_SEND_ONLY;
     stream_ = sess_->create_stream(configuration_.Output.Port, RTP_FORMAT_H264, flags);
     stream_->configure_ctx(RCC_MTU_SIZE, 1400);
+    stream_->configure_ctx(RCC_DYN_PAYLOAD_TYPE, 96);
     spdlog::trace("LibcameraStreamer streamer created");
 }
 
@@ -65,7 +66,8 @@ void LibcameraStreamer::completedRequestsProcessor() const
         const auto buffer = cameraWrapper_->GetFrameBufferForRequest(request);
         libcamera::Span bufferMemory = cameraWrapper_->Mmap(buffer)[0];
         auto ts = request->metadata().get(libcamera::controls::SensorTimestamp);
-        int64_t timestamp_ns = ts ? *ts : buffer->metadata().timestamp;
+        //int64_t timestamp_ns = ts ? *ts : buffer->metadata().timestamp;
+        int64_t timestamp_ns = ts ? ts : buffer->metadata().timestamp;
         encoderWrapper_->EncodeBuffer(buffer->planes()[0].fd.get(), bufferMemory.size(), timestamp_ns / 1000);
     }
 }
