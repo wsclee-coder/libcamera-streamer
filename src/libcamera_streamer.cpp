@@ -66,8 +66,8 @@ void LibcameraStreamer::completedRequestsProcessor() const
         const auto buffer = cameraWrapper_->GetFrameBufferForRequest(request);
         libcamera::Span bufferMemory = cameraWrapper_->Mmap(buffer)[0];
         auto ts = request->metadata().get(libcamera::controls::SensorTimestamp);
-        //int64_t timestamp_ns = ts ? *ts : buffer->metadata().timestamp;
-        int64_t timestamp_ns = ts ? ts : buffer->metadata().timestamp;
+        int64_t timestamp_ns = ts ? *ts : buffer->metadata().timestamp;
+        //int64_t timestamp_ns = ts ? ts : buffer->metadata().timestamp;
         encoderWrapper_->EncodeBuffer(buffer->planes()[0].fd.get(), bufferMemory.size(), timestamp_ns / 1000);
     }
 }

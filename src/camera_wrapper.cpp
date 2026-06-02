@@ -28,8 +28,8 @@ CameraWrapper::CameraWrapper(
 
     spdlog::trace("START Configuring video");
 
-    const libcamera::StreamRoles streamRoles = {libcamera::StreamRole::VideoRecording};
-    configuration_ = camera_->generateConfiguration(streamRoles);
+    const libcamera::StreamRole streamRole = libcamera::StreamRole::VideoRecording;
+    configuration_ = camera_->generateConfiguration({streamRole});
     if (!configuration_)
     {
         throw std::runtime_error("failed to generate video configuration");
@@ -85,8 +85,9 @@ void CameraWrapper::StartCamera()
     // that, but otherwise it applies only to preview/video modes. For stills
     // capture we set it as long as possible so that we get whatever the
     // exposure profile wants.
-    //if (!controls_.get(libcamera::controls::FrameDurationLimits))
-    if (controls_.get(libcamera::controls::FrameDurationLimits).empty())
+    if (!controls_.get(libcamera::controls::FrameDurationLimits))
+    //if (controls_.get(libcamera::controls::FrameDurationLimits).empty())
+    //if (controls_.get(libcamera::controls::FrameDurationLimits).size()==0)
     {
         if (options_->framerate > 0)
         {
@@ -118,8 +119,9 @@ void CameraWrapper::StartCamera()
         controls_.set(libcamera::controls::AwbMode, options_->awb);
     }
 
-    //if (!controls_.get(libcamera::controls::ColourGains) && options_->awb_gain_r
-    if (controls_.get(libcamera::controls::ColourGains).empty() && options_->awb_gain_r
+    if (!controls_.get(libcamera::controls::ColourGains) && options_->awb_gain_r
+    //if (controls_.get(libcamera::controls::ColourGains).empty() && options_->awb_gain_r
+    //if (controls_.get(libcamera::controls::ColourGains).size()==0  && options_->awb_gain_r
         && options_->awb_gain_b)
         controls_.set(libcamera::controls::ColourGains,
                       libcamera::Span<const float, 2>(
